@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans         xmlns="http://www.springframework.org/schema/beans"
+                     xmlns:context="http://www.springframework.org/schema/context"
+                      xmlns:tx="http://www.springframework.org/schema/tx"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                                 http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                                 http://www.springframework.org/schema/context
+                                 http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                                 http://www.springframework.org/schema/tx
+                                 http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+                                 
+<context:component-scan base-package="com.sathya.spring"/>
+
+<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+
+<bean  class="org.springframework.web.servlet.view.BeanNameViewResolver">
+<property name="order" value="0"/>
+</bean>
+<bean id="userpdfclass" class="com.sathya.spring.controller.view.LocationPdfView"/>
+<bean id="userexcelclass" class="com.sathya.spring.controller.view.LocationExcelView"/>
+
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/"/>
+<property name="suffix" value=".jsp"/>
+</bean> 
+
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+ <bean id="ht" class="org.springframework.orm.hibernate4.HibernateTemplate">
+ <property name="sessionFactory" ref="sessionFactory"/>
+ <property name="checkWriteOperations" value="false"/>
+ </bean>
+  
+ <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+ <property name="dataSource" ref="ds"/>
+ <property name="annotatedClasses">
+ <list>
+ <value>com.sathya.spring.model.Location</value>
+ <value>com.sathya.spring.model.Vendor</value>
+ <value>com.sathya.spring.model.Customer</value>
+ <value>com.sathya.spring.model.User</value>
+ <value>com.sathya.spring.model.Document</value>
+  <value>com.sathya.spring.model.Item</value>
+</list>
+ </property>
+ <property name="hibernateProperties">
+ <props>
+ <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+ <prop key="hibernate.show_sql">true</prop>
+ <prop key="hibernate.hbm2ddl.auto">update</prop>
+ </props>
+ </property>
+ </bean>
+ 
+ <bean id="txm" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+<property name="sessionFactory" ref="sessionFactory"/>
+</bean>
+
+ <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+<property name="username" value="system"/>
+<property name="password" value="123"/>
+</bean>
+
+<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+<property name="host" value="smtp.gmail.com"/>
+<property name="port" value="587"/>
+<property name="username" value="habeeb.shaik808@gmail.com"/>
+<property name="password" value="habeeb1234"/>
+<property name="javaMailProperties">
+<props>
+<prop key="mail.smtp.auth">true</prop>
+<prop key="mail.smtp.starttls.enable">true</prop>
+</props>
+</property>
+</bean>
+	
+<tx:annotation-driven transaction-manager="txm"/>
+ </beans> 
